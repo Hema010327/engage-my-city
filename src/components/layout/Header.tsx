@@ -1,9 +1,11 @@
 import { Button } from "@/components/ui/button";
-import { MapPin, User, Settings } from "lucide-react";
+import { MapPin, User, Settings, LogOut } from "lucide-react";
 import { Link, useLocation } from "react-router-dom";
+import { useAuth } from "@/hooks/useAuth";
 
 const Header = () => {
   const location = useLocation();
+  const { user, profile, signOut } = useAuth();
 
   return (
     <header className="bg-background border-b border-border shadow-card sticky top-0 z-50 backdrop-blur-sm bg-background/95">
@@ -58,10 +60,27 @@ const Header = () => {
             <Button variant="ghost" size="icon">
               <Settings className="h-4 w-4" />
             </Button>
-            <Button variant="civic" size="sm">
-              <User className="h-4 w-4 mr-2" />
-              Login
-            </Button>
+            {user ? (
+              <div className="flex items-center space-x-3">
+                <div className="hidden sm:block text-right">
+                  <div className="text-sm font-medium">{profile?.full_name}</div>
+                  <div className="text-xs text-muted-foreground capitalize">
+                    {profile?.role?.replace('_', ' ')}
+                  </div>
+                </div>
+                <Button variant="outline" size="sm" onClick={signOut}>
+                  <LogOut className="h-4 w-4 mr-2" />
+                  Sign Out
+                </Button>
+              </div>
+            ) : (
+              <Link to="/login">
+                <Button variant="civic" size="sm">
+                  <User className="h-4 w-4 mr-2" />
+                  Login
+                </Button>
+              </Link>
+            )}
           </div>
         </div>
       </div>
